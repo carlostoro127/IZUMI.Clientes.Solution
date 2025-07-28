@@ -1,0 +1,97 @@
+﻿@page "/editarcliente/{Id:int?}"
+@inject ClienteService clienteService
+@inject NavigationManager nav
+@using IZUMI.Clientes.Shared.Models
+@using Microsoft.AspNetCore.Components.Forms
+
+<h3>@(cliente.Id == 0 ? "Nuevo Cliente" : "Editar Cliente")</h3>
+
+<EditForm Model="cliente" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label>Tipo de Documento:</label>
+        <InputText class="form-control" @bind-Value="cliente.TipoDocumento" />
+    </div>
+
+    <div class="mb-3">
+        <label>Número de Documento:</label>
+        <InputText class="form-control" @bind-Value="cliente.NumeroDocumento" />
+    </div>
+
+    <div class="mb-3">
+        <label>Fecha de Nacimiento:</label>
+        <InputDate class="form-control" @bind-Value="cliente.FechaNacimiento" />
+    </div>
+
+    <div class="mb-3">
+        <label>Primer Nombre:</label>
+        <InputText class="form-control" @bind-Value="cliente.PrimerNombre" />
+    </div>
+
+    <div class="mb-3">
+        <label>Segundo Nombre:</label>
+        <InputText class="form-control" @bind-Value="cliente.SegundoNombre" />
+    </div>
+
+    <div class="mb-3">
+        <label>Primer Apellido:</label>
+        <InputText class="form-control" @bind-Value="cliente.PrimerApellido" />
+    </div>
+
+    <div class="mb-3">
+        <label>Segundo Apellido:</label>
+        <InputText class="form-control" @bind-Value="cliente.SegundoApellido" />
+    </div>
+
+    <div class="mb-3">
+        <label>Dirección:</label>
+        <InputText class="form-control" @bind-Value="cliente.Direccion" />
+    </div>
+
+    <div class="mb-3">
+        <label>Celular:</label>
+        <InputText class="form-control" @bind-Value="cliente.Celular" />
+    </div>
+
+    <div class="mb-3">
+        <label>Email:</label>
+        <InputText class="form-control" @bind-Value="cliente.Email" />
+    </div>
+
+    <div class="mb-3">
+        <label>Plan Preferido:</label>
+        <InputText class="form-control" @bind-Value="cliente.PlanPreferencia" />
+    </div>
+
+    <button class="btn btn-success" type="submit">Guardar</button>
+    <button class="btn btn-secondary" @onclick="() => nav.NavigateTo(" /clientes")">Cancelar</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    Cliente cliente = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id.HasValue)
+        {
+            cliente = await clienteService.ObtenerPorId(Id.Value);
+        }
+    }
+
+    async Task Guardar()
+    {
+        string mensaje;
+        if (cliente.Id == 0)
+            mensaje = await clienteService.Crear(cliente);
+        else
+            mensaje = await clienteService.Actualizar(cliente);
+
+        await JS.InvokeVoidAsync("alert", mensaje);
+        nav.NavigateTo("/clientes");
+    }
+}

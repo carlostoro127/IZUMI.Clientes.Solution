@@ -1,0 +1,66 @@
+﻿@page "/clientes"
+@inject ClienteService clienteService
+@inject NavigationManager nav
+@inject IJSRuntime JS
+@using IZUMI.Clientes.Shared.Models
+
+<h3>Clientes registrados</h3>
+
+<button class="btn btn-primary mb-2" @onclick="() => nav.NavigateTo(" /editarcliente")">Nuevo Cliente</button>
+
+@if (clientes == null)
+{
+    <p>Cargando...</p>
+}
+else if (clientes.Count == 0)
+{
+    <p>No hay clientes registrados.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Documento</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Plan</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in clientes)
+            {
+                <tr>
+                    <td>@c.TipoDocumento - @c.NumeroDocumento</td>
+                    <td>@c.PrimerNombre @c.PrimerApellido</td>
+                    <td>@c.Email</td>
+                    <td>@c.PlanPreferencia</td>
+                    <td>
+                        <button class="btn btn-sm btn-info" @onclick="() => nav.NavigateTo($" /editarcliente/{c.Id}")">Editar</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => ConfirmarEliminar(c.Id)">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    List<Cliente> clientes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        clientes = await clienteService.ObtenerTodos();
+    }
+
+    async Task ConfirmarEliminar(int id)
+    {
+        bool confirm = await JS.InvokeAsync<bool>("confirm", "¿Estás seguro de eliminar este cliente?");
+        if (confirm)
+        {
+            await clienteService.Eliminar(id);
+            clientes = await clienteService.ObtenerTodos(); // Recargar lista
+        }
+    }
+}
