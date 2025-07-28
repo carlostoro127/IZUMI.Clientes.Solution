@@ -22,3 +22,13 @@ Aplicación completa para la gestión de clientes desarrollada en .NET 5, Visual
 1. Abrir la solución en Visual Studio 2019
 2. Establecer como proyectos de inicio la API y el frontend
 3. Abrir la Consola de NuGet (Proyecto: API) y ejecutar:
+   
+Paso 2: Crear la base de datos manualmente
+Opción A – Usando SQL Server Management Studio (SSMS)
+Abre SQL Server Management Studio.
+
+Conéctate a tu instancia local (por ejemplo, (localdb)\MSSQLLocalDB o .\SQLEXPRESS).
+
+Haz clic en el botón “Nueva consulta”.
+
+Copia y pega el script IzumiClientesDB en SQLSERVER o ejecutar directamente desde sql serm¿ver mangment studio.
